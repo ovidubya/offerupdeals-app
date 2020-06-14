@@ -2,6 +2,10 @@
   "expo": {
     "name": "OfferUpDeals",
     "slug": "OfferUpDeals",
+    "android": {
+      "package": "com.oshalom.offerupdeals",
+      "versionCode": 1
+    },
     "platforms": [
       "ios",
       "android",

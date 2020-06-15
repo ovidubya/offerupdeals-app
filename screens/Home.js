@@ -9,12 +9,16 @@ export const Home = () => {
   const [data, setData] = useState([]);
   const [server, setServer] = useContext(BackendContext);
   const getData = () => {
-    dataService
-      .server(server)
-      .getData()
-      .then((data) => {
-        setData(data);
-      });
+    try {
+      dataService
+        .server(server)
+        .getData()
+        .then((data) => {
+          setData(data);
+        });
+    } catch (e) {
+      alert("unable to fetch data");
+    }
   };
   useEffect(() => {
     getData();
@@ -43,7 +47,8 @@ export const Home = () => {
         </MaterialIcons.Button>
       </View>
       <ScrollView>
-        {data.length !== 0 &&
+        {data &&
+          data.length !== 0 &&
           data.map((item, index) => {
             return <Card key={index} item={item} />;
           })}

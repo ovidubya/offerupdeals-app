@@ -15,6 +15,8 @@ import { Notifications } from "expo";
 import * as Permissions from "expo-permissions";
 import Constants from "expo-constants";
 import { BackendContext } from "../context/backend";
+import { ScrollView } from "react-native-gesture-handler";
+import { min } from "react-native-reanimated";
 
 export const Settings = () => {
   const [delivery, setDelievery] = useState("");
@@ -23,8 +25,10 @@ export const Settings = () => {
   const [query, setQuery] = useState("");
   const [radius, setRadius] = useState("");
   const [expoToken, setExpoToken] = useState("");
-  const [server, setServer] = useContext(BackendContext);
   const [job, setJob] = useState(false);
+  const [minYear, setMinYear] = useState("");
+  const [server, setServer] = useContext(BackendContext);
+  const [zipCode, setZipCode] = useState("");
 
   const registerForPushNotificationsAsync = async () => {
     if (Constants.isDevice) {
@@ -66,6 +70,8 @@ export const Settings = () => {
         price_min: priceMin,
         price_max: priceMax,
         radius: radius,
+        zipCode: zipCode,
+        yearMin: minYear,
       })
       .then((result) => {
         alert(JSON.stringify(result));
@@ -82,6 +88,8 @@ export const Settings = () => {
         setPriceMax(result.price_max);
         setQuery(result.query);
         setRadius(result.radius);
+        setZipCode(result.zipCode);
+        setMinYear(result.yearMin);
       });
   };
 
@@ -102,171 +110,192 @@ export const Settings = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View>
-        <Text>Query:</Text>
-        <TextInput
-          style={styles.settingsTextInput}
-          onChangeText={(text) => setQuery(text)}
-          value={query}
-        ></TextInput>
-      </View>
-      <View>
-        <Text>Price Min:</Text>
-        <TextInput
-          style={styles.settingsTextInput}
-          onChangeText={(text) => setPriceMin(text)}
-          value={priceMin}
-          keyboardType={"number-pad"}
-        ></TextInput>
-      </View>
-      <View>
-        <Text>Price Max:</Text>
-        <TextInput
-          style={styles.settingsTextInput}
-          onChangeText={(text) => setPriceMax(text)}
-          value={priceMax}
-          keyboardType={"number-pad"}
-        ></TextInput>
-      </View>
-      <View>
-        <Text>Delievery (p (pickup) or s (shipping)):</Text>
-        <TextInput
-          style={styles.settingsTextInput}
-          onChangeText={(text) => setDelievery(text)}
-          value={delivery}
-        ></TextInput>
-      </View>
-      <View>
-        <Text>Radius: </Text>
-        <TextInput
-          style={styles.settingsTextInput}
-          onChangeText={(text) => setRadius(text)}
-          value={radius}
-          keyboardType={"number-pad"}
-        ></TextInput>
-      </View>
-      <View>
-        <Text>Server: </Text>
-        <TextInput
-          style={styles.settingsTextInput}
-          onChangeText={(text) => setServer(text)}
-          value={server}
-        ></TextInput>
-      </View>
-      <View
-        style={{
-          marginTop: 10,
-        }}
-      >
-        <Button
-          onPress={() => {
-            updateSettings();
+      <ScrollView>
+        <View>
+          <Text>Query:</Text>
+          <TextInput
+            style={styles.settingsTextInput}
+            onChangeText={(text) => setQuery(text)}
+            value={query}
+          ></TextInput>
+        </View>
+        <View>
+          <Text>Price Min:</Text>
+          <TextInput
+            style={styles.settingsTextInput}
+            onChangeText={(text) => setPriceMin(text)}
+            value={priceMin}
+            keyboardType={"number-pad"}
+          ></TextInput>
+        </View>
+        <View>
+          <Text>Price Max:</Text>
+          <TextInput
+            style={styles.settingsTextInput}
+            onChangeText={(text) => setPriceMax(text)}
+            value={priceMax}
+            keyboardType={"number-pad"}
+          ></TextInput>
+        </View>
+        <View>
+          <Text>Delievery (p (pickup) or s (shipping)):</Text>
+          <TextInput
+            style={styles.settingsTextInput}
+            onChangeText={(text) => setDelievery(text)}
+            value={delivery}
+          ></TextInput>
+        </View>
+        <View>
+          <Text>Radius: </Text>
+          <TextInput
+            style={styles.settingsTextInput}
+            onChangeText={(text) => setRadius(text)}
+            value={radius}
+            keyboardType={"number-pad"}
+          ></TextInput>
+        </View>
+        <View>
+          <Text>Min post year: </Text>
+          <TextInput
+            style={styles.settingsTextInput}
+            onChangeText={(text) => setMinYear(text)}
+            value={minYear}
+            keyboardType={"number-pad"}
+          ></TextInput>
+        </View>
+        <View>
+          <Text>Zipcode: </Text>
+          <TextInput
+            style={styles.settingsTextInput}
+            onChangeText={(text) => setZipCode(text)}
+            value={zipCode}
+            keyboardType={"number-pad"}
+          ></TextInput>
+        </View>
+        <View>
+          <Text>Server: </Text>
+          <TextInput
+            style={styles.settingsTextInput}
+            onChangeText={(text) => setServer(text)}
+            value={server}
+          ></TextInput>
+        </View>
+        <View
+          style={{
+            marginTop: 10,
           }}
-          title="Update"
-        />
-      </View>
-      <View
-        style={{
-          marginTop: 10,
-        }}
-      >
-        <Button
-          onPress={() => {
-            getSettings();
+        >
+          <Button
+            onPress={() => {
+              updateSettings();
+            }}
+            title="Update"
+          />
+        </View>
+        <View
+          style={{
+            marginTop: 10,
           }}
-          color="#2ecc71"
-          title="Reload"
-        />
-      </View>
-      <View
-        style={{
-          marginTop: 10,
-        }}
-      >
-        <Button
-          onPress={() => {
-            blacklistService
-              .server(server)
-              .clearBlackList()
-              .then((data) => {
-                alert(JSON.stringify(data));
-              });
+        >
+          <Button
+            onPress={() => {
+              getSettings();
+            }}
+            color="#2ecc71"
+            title="Reload"
+          />
+        </View>
+        <View
+          style={{
+            marginTop: 10,
           }}
-          color="#c0392b"
-          title="Clear blacklist"
-        />
-      </View>
-      <View
-        style={{
-          marginTop: 10,
-        }}
-      >
-        <Button
-          onPress={() => {
-            expoTokenService
-              .server(server)
-              .send(expoToken)
-              .then((result) => {
-                alert(JSON.stringify(result));
-              });
+        >
+          <Button
+            onPress={() => {
+              blacklistService
+                .server(server)
+                .clearBlackList()
+                .then((data) => {
+                  alert(JSON.stringify(data));
+                });
+            }}
+            color="#c0392b"
+            title="Clear blacklist"
+          />
+        </View>
+        <View
+          style={{
+            marginTop: 10,
           }}
-          color="#7f8c8d"
-          title="Send token to server"
-        />
-      </View>
-      <View
-        style={{
-          marginTop: 10,
-        }}
-      >
-        <Button
-          onPress={() => {
-            if (job) {
+        >
+          <Button
+            onPress={() => {
+              expoTokenService
+                .server(server)
+                .send(expoToken)
+                .then((result) => {
+                  alert(JSON.stringify(result));
+                });
+            }}
+            color="#7f8c8d"
+            title="Send token to server"
+          />
+        </View>
+        <View
+          style={{
+            marginTop: 10,
+          }}
+        >
+          <Button
+            onPress={() => {
+              if (job) {
+                jobService
+                  .server(server)
+                  .stop()
+                  .then((data) => {
+                    setJob(!job);
+                    alert("stopped job service");
+                  });
+              } else {
+                jobService
+                  .server(server)
+                  .start()
+                  .then((data) => {
+                    setJob(!job);
+                    alert("started job service");
+                  });
+              }
+            }}
+            color="#ff6b6b"
+            title={`Toggle Extract, currently: ${job === true ? "on" : "off"} `}
+          />
+        </View>
+        <View
+          style={{
+            marginTop: 10,
+          }}
+        >
+          <Button
+            onPress={() => {
               jobService
                 .server(server)
-                .stop()
+                .extract()
                 .then((data) => {
-                  setJob(!job);
-                  alert("stopped job service");
+                  alert(JSON.stringify(data));
                 });
-            } else {
-              jobService
-                .server(server)
-                .start()
-                .then((data) => {
-                  setJob(!job);
-                  alert("started job service");
-                });
-            }
-          }}
-          color="#ff6b6b"
-          title={`Toggle Extract, currently: ${job === true ? "on" : "off"} `}
-        />
-      </View>
-      <View
-        style={{
-          marginTop: 10,
-        }}
-      >
-        <Button
-          onPress={() => {
-            jobService
-              .server(server)
-              .extract()
-              .then((data) => {
-                alert(JSON.stringify(data));
-              });
-          }}
-          color="#222f3e"
-          title={`Execute Extract`}
-        />
-      </View>
+            }}
+            color="#222f3e"
+            title={`Execute Extract`}
+          />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   settingsTextInput: {
+    padding: 5,
     borderColor: "black",
     borderWidth: 1,
   },

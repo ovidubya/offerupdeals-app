@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -6,6 +6,7 @@ import { Home } from "./screens/Home";
 import { Settings } from "./screens/Settings";
 import { MaterialIcons } from "@expo/vector-icons";
 import { BackendContext } from "./context/backend";
+import * as SecureStore from "expo-secure-store";
 
 const Stack = createStackNavigator();
 
@@ -20,7 +21,15 @@ const HomeStackScreen = () => {
 const Tab = createBottomTabNavigator();
 
 export default function App() {
-  const [server, setServer] = useState("http://192.168.0.2:3000/offerup");
+  const [server, setServer] = useState("");
+  useEffect(async () => {
+    const key = await SecureStore.getItemAsync("server");
+    if (key) {
+      setServer(key);
+    } else {
+      setServer("http://192.168.0.2:3000/offerup");
+    }
+  }, []);
   return (
     <BackendContext.Provider value={[server, setServer]}>
       <NavigationContainer>

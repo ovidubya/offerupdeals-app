@@ -18,10 +18,7 @@ import { BackendContext } from "../context/backend";
 export const Card = ({ item }) => {
   const [server, setServer] = useContext(BackendContext);
   return (
-    <TouchableHighlight
-      underlayColor="transparent"
-      onPress={() => console.log("hi")}
-    >
+    <TouchableHighlight underlayColor="transparent">
       <View style={styles.card}>
         <View style={styles.cardContent}>
           <View style={styles.cardImageContainer}>

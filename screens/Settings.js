@@ -16,7 +16,7 @@ import * as Permissions from "expo-permissions";
 import Constants from "expo-constants";
 import { BackendContext } from "../context/backend";
 import { ScrollView } from "react-native-gesture-handler";
-import { min } from "react-native-reanimated";
+import * as SecureStore from "expo-secure-store";
 
 export const Settings = () => {
   const [delivery, setDelievery] = useState("");
@@ -176,7 +176,10 @@ export const Settings = () => {
           <Text>Server: </Text>
           <TextInput
             style={styles.settingsTextInput}
-            onChangeText={(text) => setServer(text)}
+            onChangeText={(text) => {
+              setServer(text);
+              SecureStore.setItemAsync("server", text);
+            }}
             value={server}
           ></TextInput>
         </View>
